@@ -122,7 +122,7 @@ export async function sendAndLogWebhook(
   leadId: string
 ): Promise<WebhookResponse> {
   // Fixed Railway webhook endpoint
-  const webhookUrl = "https://primary-production-4ada.up.railway.app/webhook-test/8b0186e8-2663-4c57-9e19-837218c3fafb";
+  const webhookUrl = "https://primary-production-4ada.up.railway.app/webhook/8b0186e8-2663-4c57-9e19-837218c3fafb";
 
   // Prepare the payload
   const payload: WebhookPayload = {
@@ -170,7 +170,7 @@ export async function sendTestWebhook(
 ): Promise<WebhookResponse> {
   // Railway webhook test endpoint
   const testWebhookUrl =
-    "https://primary-production-4ada.up.railway.app/webhook-test/8b0186e8-2663-4c57-9e19-837218c3fafb";
+    "https://primary-production-4ada.up.railway.app/webhook/8b0186e8-2663-4c57-9e19-837218c3fafb";
 
   console.log("🚀 USING RAILWAY WEBHOOK URL:", testWebhookUrl);
 
