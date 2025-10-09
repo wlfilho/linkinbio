@@ -9,6 +9,7 @@ import MaskedInput from "@/components/ui/MaskedInput";
 import Card from "@/components/ui/Card";
 import { toast } from "sonner";
 import type { FreeMaterial } from "@/lib/types/database";
+import { sendTestWebhook } from "@/lib/utils/webhook";
 
 interface LeadFormProps {
   userId: string;
@@ -205,17 +206,53 @@ export default function LeadForm({ userId }: LeadFormProps) {
 
       console.log("✅ Lead submitted successfully:", data);
 
-      // Buscar o material selecionado para redirecionar
+      // Get the created lead ID
+      const createdLead = data?.[0];
+      const leadId = createdLead?.id;
+
+      if (!leadId) {
+        console.error("❌ No lead ID returned from insert");
+        throw new Error("Failed to get lead ID");
+      }
+
+      console.log("📝 Lead ID:", leadId);
+
+      // Buscar o material selecionado
       const selectedMaterial = materials.find(m => m.id === formData.selectedMaterial);
 
-      if (selectedMaterial?.webhook_url) {
-        toast.success("Redirecionando para o material...");
-        setTimeout(() => {
-          window.open(selectedMaterial.webhook_url, "_blank");
-        }, 1000);
-      } else {
+      if (!selectedMaterial) {
+        console.error("❌ Selected material not found");
         toast.success("Obrigado! Você receberá o material em breve.");
+        setIsSubmitted(true);
+        setFormData({ fullName: "", email: "", whatsapp: "", selectedMaterial: "" });
+        setTouched({ fullName: false, email: false, whatsapp: false, selectedMaterial: false });
+        setErrors({});
+        return;
       }
+
+      console.log("📦 Selected material:", selectedMaterial);
+
+      // Send webhook asynchronously (don't block user experience)
+      console.log("🚀 Sending webhook...");
+
+      // Send webhook in the background
+      sendTestWebhook(
+        {
+          full_name: leadData.full_name,
+          email: leadData.email,
+          whatsapp: leadData.whatsapp,
+        },
+        selectedMaterial,
+        leadId
+      ).then((webhookResponse) => {
+        console.log("✅ Webhook sent:", webhookResponse);
+      }).catch((error) => {
+        console.error("❌ Webhook error:", error);
+        // Don't show error to user - webhook failure shouldn't affect UX
+      });
+
+      // Show success message immediately (don't wait for webhook)
+      toast.success("Obrigado! Você receberá o material em breve.");
 
       setIsSubmitted(true);
       setFormData({ fullName: "", email: "", whatsapp: "", selectedMaterial: "" });

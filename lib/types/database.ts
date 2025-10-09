@@ -139,7 +139,6 @@ export interface Database {
           id: string
           user_id: string
           material_name: string
-          webhook_url: string
           email_content: string
           thank_you_content: string
           is_active: boolean
@@ -151,7 +150,6 @@ export interface Database {
           id?: string
           user_id: string
           material_name: string
-          webhook_url: string
           email_content: string
           thank_you_content: string
           is_active?: boolean
@@ -163,7 +161,6 @@ export interface Database {
           id?: string
           user_id?: string
           material_name?: string
-          webhook_url?: string
           email_content?: string
           thank_you_content?: string
           is_active?: boolean
@@ -239,6 +236,44 @@ export interface Database {
           viewed_at?: string
         }
       }
+      webhook_logs: {
+        Row: {
+          id: string
+          lead_id: string
+          material_id: string | null
+          webhook_url: string
+          payload: Json
+          response_status: number | null
+          response_body: string | null
+          error_message: string | null
+          sent_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          lead_id: string
+          material_id?: string | null
+          webhook_url: string
+          payload: Json
+          response_status?: number | null
+          response_body?: string | null
+          error_message?: string | null
+          sent_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          lead_id?: string
+          material_id?: string | null
+          webhook_url?: string
+          payload?: Json
+          response_status?: number | null
+          response_body?: string | null
+          error_message?: string | null
+          sent_at?: string
+          created_at?: string
+        }
+      }
     }
   }
 }
@@ -251,6 +286,7 @@ export type Lead = Database['public']['Tables']['leads']['Row']
 export type Story = Database['public']['Tables']['stories']['Row']
 export type StoryView = Database['public']['Tables']['story_views']['Row']
 export type FreeMaterial = Database['public']['Tables']['free_materials']['Row']
+export type WebhookLog = Database['public']['Tables']['webhook_logs']['Row']
 
 export type ProfileInsert = Database['public']['Tables']['profiles']['Insert']
 export type SocialLinkInsert = Database['public']['Tables']['social_links']['Insert']
@@ -259,6 +295,7 @@ export type LeadInsert = Database['public']['Tables']['leads']['Insert']
 export type StoryInsert = Database['public']['Tables']['stories']['Insert']
 export type StoryViewInsert = Database['public']['Tables']['story_views']['Insert']
 export type FreeMaterialInsert = Database['public']['Tables']['free_materials']['Insert']
+export type WebhookLogInsert = Database['public']['Tables']['webhook_logs']['Insert']
 
 export type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 export type SocialLinkUpdate = Database['public']['Tables']['social_links']['Update']
@@ -267,4 +304,5 @@ export type LeadUpdate = Database['public']['Tables']['leads']['Update']
 export type StoryUpdate = Database['public']['Tables']['stories']['Update']
 export type StoryViewUpdate = Database['public']['Tables']['story_views']['Update']
 export type FreeMaterialUpdate = Database['public']['Tables']['free_materials']['Update']
+export type WebhookLogUpdate = Database['public']['Tables']['webhook_logs']['Update']
 

@@ -22,14 +22,12 @@ export default function FreeMaterialsForm({
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     material_name: "",
-    webhook_url: "",
     email_content: "",
     thank_you_content: "",
   });
 
   const [errors, setErrors] = useState({
     material_name: "",
-    webhook_url: "",
     email_content: "",
     thank_you_content: "",
   });
@@ -38,7 +36,6 @@ export default function FreeMaterialsForm({
     if (material) {
       setFormData({
         material_name: material.material_name,
-        webhook_url: material.webhook_url,
         email_content: material.email_content,
         thank_you_content: material.thank_you_content,
       });
@@ -48,7 +45,6 @@ export default function FreeMaterialsForm({
   const validateForm = (): boolean => {
     const newErrors = {
       material_name: "",
-      webhook_url: "",
       email_content: "",
       thank_you_content: "",
     };
@@ -59,19 +55,6 @@ export default function FreeMaterialsForm({
     if (!formData.material_name.trim()) {
       newErrors.material_name = "Nome do material é obrigatório";
       isValid = false;
-    }
-
-    // Validate webhook URL
-    if (!formData.webhook_url.trim()) {
-      newErrors.webhook_url = "URL do webhook é obrigatória";
-      isValid = false;
-    } else {
-      try {
-        new URL(formData.webhook_url);
-      } catch {
-        newErrors.webhook_url = "URL inválida";
-        isValid = false;
-      }
     }
 
     // Validate email content
@@ -115,7 +98,6 @@ export default function FreeMaterialsForm({
           .from("free_materials")
           .update({
             material_name: formData.material_name.trim(),
-            webhook_url: formData.webhook_url.trim(),
             email_content: formData.email_content.trim(),
             thank_you_content: formData.thank_you_content.trim(),
             updated_at: new Date().toISOString(),
@@ -131,7 +113,6 @@ export default function FreeMaterialsForm({
           .insert({
             user_id: user.id,
             material_name: formData.material_name.trim(),
-            webhook_url: formData.webhook_url.trim(),
             email_content: formData.email_content.trim(),
             thank_you_content: formData.thank_you_content.trim(),
             order_index: 0,
@@ -171,25 +152,6 @@ export default function FreeMaterialsForm({
             required
             error={errors.material_name}
           />
-        </div>
-
-        {/* Webhook URL */}
-        <div>
-          <Input
-            label="Link do Webhook para Download"
-            type="url"
-            value={formData.webhook_url}
-            onChange={(e) => {
-              setFormData({ ...formData, webhook_url: e.target.value });
-              setErrors({ ...errors, webhook_url: "" });
-            }}
-            placeholder="https://seu-webhook.com/download"
-            required
-            error={errors.webhook_url}
-          />
-          <p className="text-[#F1FFFA]/50 text-sm mt-1">
-            URL que será chamada quando o usuário solicitar o download
-          </p>
         </div>
 
         {/* Email Content */}

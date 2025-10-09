@@ -242,14 +242,6 @@ export default function FreeMaterialsPage() {
                       <h3 className="text-lg font-heading font-bold text-[#177245] mb-1">
                         {material.material_name}
                       </h3>
-                      <a
-                        href={material.webhook_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#F1FFFA]/60 text-sm hover:text-[#177245] transition-colors break-all"
-                      >
-                        {material.webhook_url}
-                      </a>
                     </div>
 
                     {/* Status Badge */}
