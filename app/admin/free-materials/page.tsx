@@ -1,24 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Eye, EyeOff, GripVertical, Download } from "lucide-react";
+import { Plus, Edit2, Trash2, Eye, EyeOff, ChevronUp, ChevronDown, FileText } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import type { FreeMaterial } from "@/lib/types/database";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import Input from "@/components/ui/Input";
+import FreeMaterialsForm from "@/components/admin/FreeMaterialsForm";
 
 export default function FreeMaterialsPage() {
   const [materials, setMaterials] = useState<FreeMaterial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<FreeMaterial | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    download_link: "",
-  });
 
   useEffect(() => {
     fetchMaterials();
@@ -51,74 +46,19 @@ export default function FreeMaterialsPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFormSuccess = () => {
+    setShowForm(false);
+    setEditingMaterial(null);
+    fetchMaterials();
+  };
 
-    if (!formData.title.trim()) {
-      toast.error("Título é obrigatório");
-      return;
-    }
-
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        toast.error("Usuário não autenticado");
-        return;
-      }
-
-      if (editingMaterial) {
-        // Update existing material
-        const { error } = await supabase
-          .from("free_materials")
-          .update({
-            title: formData.title.trim(),
-            description: formData.description.trim() || null,
-            download_link: formData.download_link.trim() || null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", editingMaterial.id);
-
-        if (error) throw error;
-        toast.success("Material atualizado com sucesso!");
-      } else {
-        // Create new material
-        const maxOrder = materials.length > 0 
-          ? Math.max(...materials.map(m => m.order_index))
-          : -1;
-
-        const { error } = await supabase
-          .from("free_materials")
-          .insert({
-            user_id: user.id,
-            title: formData.title.trim(),
-            description: formData.description.trim() || null,
-            download_link: formData.download_link.trim() || null,
-            order_index: maxOrder + 1,
-          });
-
-        if (error) throw error;
-        toast.success("Material criado com sucesso!");
-      }
-
-      setFormData({ title: "", description: "", download_link: "" });
-      setShowForm(false);
-      setEditingMaterial(null);
-      fetchMaterials();
-    } catch (error: any) {
-      console.error("Error saving material:", error);
-      toast.error("Erro ao salvar material");
-    }
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setEditingMaterial(null);
   };
 
   const handleEdit = (material: FreeMaterial) => {
     setEditingMaterial(material);
-    setFormData({
-      title: material.title,
-      description: material.description || "",
-      download_link: material.download_link || "",
-    });
     setShowForm(true);
   };
 
@@ -211,12 +151,6 @@ export default function FreeMaterialsPage() {
     }
   };
 
-  const cancelEdit = () => {
-    setShowForm(false);
-    setEditingMaterial(null);
-    setFormData({ title: "", description: "", download_link: "" });
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -247,55 +181,19 @@ export default function FreeMaterialsPage() {
 
       {/* Form */}
       {showForm && (
-        <Card className="bg-[#2a2727] border-[#3a3737] p-6 mb-6">
-          <h2 className="text-xl font-heading font-bold text-[#177245] mb-4">
-            {editingMaterial ? "Editar Material" : "Novo Material"}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Título"
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Ex: E-book Gratuito de Marketing"
-              required
-            />
-            <div>
-              <label className="block text-sm font-medium text-[#F1FFFA]/90 mb-2">
-                Descrição (opcional)
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Descrição do material..."
-                rows={3}
-                className="w-full px-4 py-2.5 rounded-lg border border-[#3a3737] bg-[#2a2727] text-[#F1FFFA] placeholder:text-[#F1FFFA]/50 focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 outline-none"
-              />
-            </div>
-            <Input
-              label="Link de Download"
-              type="url"
-              value={formData.download_link}
-              onChange={(e) => setFormData({ ...formData, download_link: e.target.value })}
-              placeholder="https://..."
-              icon={<Download className="w-5 h-5" />}
-            />
-            <div className="flex gap-3">
-              <Button type="submit" className="flex-1">
-                {editingMaterial ? "Atualizar" : "Criar"}
-              </Button>
-              <Button type="button" variant="secondary" onClick={cancelEdit}>
-                Cancelar
-              </Button>
-            </div>
-          </form>
-        </Card>
+        <div className="mb-6">
+          <FreeMaterialsForm
+            material={editingMaterial}
+            onSuccess={handleFormSuccess}
+            onCancel={handleFormCancel}
+          />
+        </div>
       )}
 
       {/* Materials List */}
       {materials.length === 0 ? (
         <Card className="bg-[#2a2727] border-[#3a3737] p-12 text-center">
-          <Download className="w-16 h-16 text-[#F1FFFA]/30 mx-auto mb-4" />
+          <FileText className="w-16 h-16 text-[#F1FFFA]/30 mx-auto mb-4" />
           <h3 className="text-xl font-heading font-bold text-[#F1FFFA]/70 mb-2">
             Nenhum material cadastrado
           </h3>
@@ -312,50 +210,79 @@ export default function FreeMaterialsPage() {
           {materials.map((material, index) => (
             <Card
               key={material.id}
-              className={`bg-[#2a2727] border-[#3a3737] p-4 ${
+              className={`bg-[#2a2727] border-[#3a3737] p-6 ${
                 !material.is_active ? "opacity-60" : ""
               }`}
             >
               <div className="flex items-start gap-4">
-                {/* Drag Handle */}
-                <div className="flex flex-col gap-1 pt-2">
+                {/* Order Controls */}
+                <div className="flex flex-col gap-1 pt-1">
                   <button
                     onClick={() => moveUp(index)}
                     disabled={index === 0}
-                    className="text-[#F1FFFA]/50 hover:text-[#177245] disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="text-[#F1FFFA]/50 hover:text-[#177245] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    title="Mover para cima"
                   >
-                    <GripVertical className="w-5 h-5" />
+                    <ChevronUp className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => moveDown(index)}
                     disabled={index === materials.length - 1}
-                    className="text-[#F1FFFA]/50 hover:text-[#177245] disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="text-[#F1FFFA]/50 hover:text-[#177245] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    title="Mover para baixo"
                   >
-                    <GripVertical className="w-5 h-5" />
+                    <ChevronDown className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-lg font-heading font-bold text-[#177245]">
-                    {material.title}
-                  </h3>
-                  {material.description && (
-                    <p className="text-[#F1FFFA]/70 text-sm mt-1">
-                      {material.description}
-                    </p>
-                  )}
-                  {material.download_link && (
-                    <a
-                      href={material.download_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#177245] text-sm mt-2 inline-flex items-center gap-1 hover:underline"
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-heading font-bold text-[#177245] mb-1">
+                        {material.material_name}
+                      </h3>
+                      <a
+                        href={material.webhook_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#F1FFFA]/60 text-sm hover:text-[#177245] transition-colors break-all"
+                      >
+                        {material.webhook_url}
+                      </a>
+                    </div>
+
+                    {/* Status Badge */}
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                        material.is_active
+                          ? "bg-[#177245]/20 text-[#177245]"
+                          : "bg-[#F1FFFA]/10 text-[#F1FFFA]/50"
+                      }`}
                     >
-                      <Download className="w-4 h-4" />
-                      Ver link
-                    </a>
-                  )}
+                      {material.is_active ? "Ativo" : "Inativo"}
+                    </span>
+                  </div>
+
+                  {/* Email Content Preview */}
+                  <div className="mb-3">
+                    <p className="text-[#F1FFFA]/50 text-xs font-medium mb-1">
+                      Conteúdo do Email:
+                    </p>
+                    <p className="text-[#F1FFFA]/70 text-sm line-clamp-2">
+                      {material.email_content}
+                    </p>
+                  </div>
+
+                  {/* Thank You Content Preview */}
+                  <div>
+                    <p className="text-[#F1FFFA]/50 text-xs font-medium mb-1">
+                      Página de Obrigado:
+                    </p>
+                    <p className="text-[#F1FFFA]/70 text-sm line-clamp-2">
+                      {material.thank_you_content}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Actions */}

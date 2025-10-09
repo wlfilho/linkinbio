@@ -138,10 +138,10 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          title: string
-          description: string | null
-          file_url: string | null
-          download_link: string | null
+          material_name: string
+          webhook_url: string
+          email_content: string
+          thank_you_content: string
           is_active: boolean
           order_index: number
           created_at: string
@@ -150,10 +150,10 @@ export interface Database {
         Insert: {
           id?: string
           user_id: string
-          title: string
-          description?: string | null
-          file_url?: string | null
-          download_link?: string | null
+          material_name: string
+          webhook_url: string
+          email_content: string
+          thank_you_content: string
           is_active?: boolean
           order_index?: number
           created_at?: string
@@ -162,10 +162,10 @@ export interface Database {
         Update: {
           id?: string
           user_id?: string
-          title?: string
-          description?: string | null
-          file_url?: string | null
-          download_link?: string | null
+          material_name?: string
+          webhook_url?: string
+          email_content?: string
+          thank_you_content?: string
           is_active?: boolean
           order_index?: number
           created_at?: string

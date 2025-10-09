@@ -208,10 +208,10 @@ export default function LeadForm({ userId }: LeadFormProps) {
       // Buscar o material selecionado para redirecionar
       const selectedMaterial = materials.find(m => m.id === formData.selectedMaterial);
 
-      if (selectedMaterial?.download_link) {
+      if (selectedMaterial?.webhook_url) {
         toast.success("Redirecionando para o material...");
         setTimeout(() => {
-          window.open(selectedMaterial.download_link!, "_blank");
+          window.open(selectedMaterial.webhook_url, "_blank");
         }, 1000);
       } else {
         toast.success("Obrigado! Você receberá o material em breve.");
@@ -366,7 +366,7 @@ export default function LeadForm({ userId }: LeadFormProps) {
             <option value="" disabled>Escolha um material...</option>
             {materials.map((material) => (
               <option key={material.id} value={material.id}>
-                {material.title}
+                {material.material_name}
               </option>
             ))}
           </select>
