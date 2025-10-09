@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, ExternalLink, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, ExternalLink, LogOut, Download } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
@@ -34,6 +34,11 @@ export default function AdminNav({ profile }: AdminNavProps) {
       href: "/admin/leads",
       label: "Leads",
       icon: Users,
+    },
+    {
+      href: "/admin/free-materials",
+      label: "Materiais",
+      icon: Download,
     },
   ];
 

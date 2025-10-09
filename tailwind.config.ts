@@ -9,11 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#0891B2",
-        background: "#F3F4F6",
-        card: "#FFFFFF",
-        text: "#1F2937",
-        border: "#E5E7EB",
+        primary: "#177245",
+        background: "#212020",
+        card: "#2a2727",
+        text: "#F1FFFA",
+        border: "#3a3737",
+      },
+      fontFamily: {
+        heading: ["var(--font-fira-sans-condensed)", "sans-serif"],
+        body: ["var(--font-fira-sans)", "sans-serif"],
       },
     },
   },

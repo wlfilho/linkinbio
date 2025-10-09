@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0891B2;
-  --background: #F3F4F6;
-  --card: #FFFFFF;
-  --text: #1F2937;
-  --border: #E5E7EB;
+  --primary: #177245;
+  --background: #212020;
+  --card: #2a2727;
+  --text: #F1FFFA;
+  --border: #3a3737;
 }
 
 body {
@@ -21,6 +21,20 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Social icon hover effect with CSS variables */
+  .social-icon-hover:hover {
+    background-color: var(--hover-bg) !important;
   }
 }
 

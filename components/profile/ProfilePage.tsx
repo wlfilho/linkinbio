@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { Profile, SocialLink, CustomButton } from "@/lib/types/database";
 import LeadForm from "./LeadForm";
+import WebStories from "./WebStories";
 
 interface ProfilePageProps {
   profile: Profile;
@@ -67,66 +68,79 @@ export default function ProfilePage({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-purple-50 py-12 px-4">
+    <div className="min-h-screen bg-[#212020] py-8 px-4 sm:py-12">
       <div className="max-w-2xl mx-auto">
-        {/* Profile Header */}
-        <div className="text-center mb-8">
-          {/* Avatar */}
-          <div className="relative inline-block mb-4">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-              {profile.avatar_url && !imageError ? (
-                <Image
-                  src={profile.avatar_url}
-                  alt={profile.full_name}
-                  width={128}
-                  height={128}
-                  className="w-full h-full object-cover"
-                  onError={() => setImageError(true)}
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-primary to-cyan-600 flex items-center justify-center text-white text-4xl font-bold">
-                  {profile.full_name.charAt(0).toUpperCase()}
+        {/* Profile Header - Grid Layout */}
+        <div className="bg-[#2a2727] rounded-lg p-6 mb-8 border border-[#3a3737]">
+          <div className="grid grid-cols-[auto_1fr] gap-6 items-start">
+            {/* Column 1: Avatar */}
+            <div className="flex-shrink-0">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden border border-[#3a3737]">
+                {profile.avatar_url && !imageError ? (
+                  <Image
+                    src={profile.avatar_url}
+                    alt={profile.full_name}
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-cover"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#177245] flex items-center justify-center text-white text-3xl font-bold">
+                    {profile.full_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Column 2: Profile Info */}
+            <div className="min-w-0 flex flex-col justify-center">
+              {/* Name */}
+              <h1 className="text-2xl sm:text-3xl font-heading font-bold text-[#177245] mb-0 truncate">
+                {profile.full_name}
+              </h1>
+
+              {/* Title/Description */}
+              {profile.title && (
+                <p className="text-[#F1FFFA]/90 text-sm font-body mb-3">
+                  {profile.title}
+                </p>
+              )}
+
+              {/* Social Links */}
+              {socialLinks.length > 0 && (
+                <div className="flex gap-2 flex-wrap">
+                  {socialLinks.map((link) => {
+                    const Icon = getIconForPlatform(link.platform);
+                    return (
+                      <a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group"
+                        title={link.display_name}
+                        aria-label={link.display_name}
+                      >
+                        <div
+                          className="social-icon-hover w-10 h-10 rounded-md border border-[#3a3737] bg-[#2a2727] flex items-center justify-center text-[#F1FFFA]/70 transition-all duration-200 hover:border-transparent hover:text-white"
+                          style={{
+                            ['--hover-bg' as any]: link.color,
+                          }}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </div>
+                      </a>
+                    );
+                  })}
                 </div>
               )}
             </div>
-            {/* Online indicator */}
-            <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-4 border-white"></div>
           </div>
-
-          {/* Name and Title */}
-          <h1 className="text-3xl font-bold text-text mb-2">
-            {profile.full_name}
-          </h1>
-          {profile.title && (
-            <p className="text-gray-600 text-lg">{profile.title}</p>
-          )}
         </div>
 
-        {/* Social Links */}
-        {socialLinks.length > 0 && (
-          <div className="flex justify-center gap-4 mb-8 flex-wrap">
-            {socialLinks.map((link) => {
-              const Icon = getIconForPlatform(link.platform);
-              return (
-                <a
-                  key={link.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                  title={link.display_name}
-                >
-                  <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl"
-                    style={{ backgroundColor: link.color }}
-                  >
-                    <Icon className="w-6 h-6" />
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        )}
+        {/* Web Stories */}
+        <WebStories userId={profile.id} />
 
         {/* Custom Buttons */}
         {customButtons.length > 0 && (
@@ -141,19 +155,19 @@ export default function ProfilePage({
                   rel={button.link_type === "external" ? "noopener noreferrer" : undefined}
                   className="block"
                 >
-                  <div className="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-border group">
+                  <div className="bg-[#2a2727] rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-[#3a3737] group">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-text text-lg group-hover:text-primary transition-colors">
+                        <h3 className="font-heading font-semibold text-[#177245] text-lg group-hover:text-[#1a8a52] transition-colors">
                           {button.title}
                         </h3>
                         {button.subtitle && (
-                          <p className="text-gray-600 text-sm mt-1">
+                          <p className="text-[#F1FFFA]/90 text-sm font-body mt-1">
                             {button.subtitle}
                           </p>
                         )}
                       </div>
-                      <Icon className="w-6 h-6 text-gray-400 group-hover:text-primary transition-colors ml-4" />
+                      <Icon className="w-6 h-6 text-[#F1FFFA]/70 group-hover:text-[#1a8a52] transition-colors ml-4" />
                     </div>
                   </div>
                 </a>
@@ -166,11 +180,11 @@ export default function ProfilePage({
         <LeadForm userId={profile.id} />
 
         {/* Footer */}
-        <footer className="text-center mt-12 text-gray-600 text-sm">
+        <footer className="text-center mt-12 text-[#F1FFFA]/70 text-sm font-body">
           <p>© {new Date().getFullYear()} {profile.full_name}. Todos os direitos reservados.</p>
           <p className="mt-2">
             Criado com{" "}
-            <span className="text-red-500">❤</span>{" "}
+            <span className="text-[#177245]">❤</span>{" "}
             usando Link in Bio
           </p>
         </footer>
