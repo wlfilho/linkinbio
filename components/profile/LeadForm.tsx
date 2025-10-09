@@ -372,6 +372,7 @@ export default function LeadForm({ userId }: LeadFormProps) {
           onBlur={() => handleBlur("whatsapp")}
           icon={<Phone className="w-5 h-5" />}
           error={touched.whatsapp ? errors.whatsapp : undefined}
+          success={touched.whatsapp && !errors.whatsapp && validatePhone(formData.whatsapp)}
           mask="phone"
           required
           autoComplete="tel"
@@ -380,7 +381,15 @@ export default function LeadForm({ userId }: LeadFormProps) {
 
         {/* Dropdown de seleção de material */}
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F1FFFA]/70 pointer-events-none">
+          <div className={`
+            absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-200
+            ${errors.selectedMaterial && touched.selectedMaterial
+              ? "text-red-500"
+              : formData.selectedMaterial
+              ? "text-[#177245]"
+              : "text-[#F1FFFA]/70"
+            }
+          `}>
             <Download className="w-5 h-5" />
           </div>
           <select
@@ -389,10 +398,12 @@ export default function LeadForm({ userId }: LeadFormProps) {
             onChange={handleChange}
             onBlur={() => handleBlur("selectedMaterial")}
             className={`
-              w-full px-4 py-2.5 pl-11 rounded-lg border transition-all duration-200 text-[#F1FFFA] bg-[#2a2727]
+              w-full px-4 py-2.5 pl-11 rounded-lg border transition-all duration-200 text-[#F1FFFA]
               ${errors.selectedMaterial && touched.selectedMaterial
-                ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                : "border-[#3a3737] focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 hover:border-[#4a4747]"
+                ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 bg-red-950/20"
+                : formData.selectedMaterial
+                ? "border-[#177245] focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 bg-[#177245]/10"
+                : "border-[#3a3737] focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 bg-[#2a2727] hover:border-[#4a4747]"
               }
               outline-none appearance-none
               disabled:bg-[#212020] disabled:cursor-not-allowed

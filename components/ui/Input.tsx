@@ -41,6 +41,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               placeholder:text-[#F1FFFA]/50
               disabled:bg-[#212020] disabled:cursor-not-allowed
               outline-none
+              [&:-webkit-autofill]:!bg-[#2a2727]
+              [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#2a2727_inset]
+              [&:-webkit-autofill]:[-webkit-text-fill-color:#F1FFFA]
+              [&:-webkit-autofill:hover]:!bg-[#2a2727]
+              [&:-webkit-autofill:focus]:!bg-[#2a2727]
+              [&:-webkit-autofill:active]:!bg-[#2a2727]
               ${className}
             `}
             {...props}

@@ -6,12 +6,13 @@ interface MaskedInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, '
   label?: string;
   icon?: React.ReactNode;
   error?: string;
+  success?: boolean;
   mask?: 'phone' | 'none';
   onChange?: (value: string, maskedValue: string) => void;
 }
 
 const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
-  ({ label, icon, error, mask = 'none', onChange, value, className = "", ...props }, ref) => {
+  ({ label, icon, error, success, mask = 'none', onChange, value, className = "", ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState("");
     const [mounted, setMounted] = useState(false);
 
@@ -83,7 +84,10 @@ const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F1FFFA]/70 transition-colors duration-200 peer-focus:text-[#177245]">
+            <div className={`
+              absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-200
+              ${error ? "text-red-500" : success ? "text-[#177245]" : "text-[#F1FFFA]/70"}
+            `}>
               {icon}
             </div>
           )}
@@ -96,11 +100,19 @@ const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
               ${icon ? "pl-11" : ""}
               ${error
                 ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 bg-red-950/20"
+                : success
+                ? "border-[#177245] focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 bg-[#177245]/10"
                 : "border-[#3a3737] focus:border-[#177245] focus:ring-2 focus:ring-[#177245]/20 bg-[#2a2727] hover:border-[#4a4747]"
               }
               placeholder:text-[#F1FFFA]/50
               disabled:bg-[#212020] disabled:cursor-not-allowed
               outline-none
+              [&:-webkit-autofill]:!bg-[#2a2727]
+              [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_#2a2727_inset]
+              [&:-webkit-autofill]:[-webkit-text-fill-color:#F1FFFA]
+              [&:-webkit-autofill:hover]:!bg-[#2a2727]
+              [&:-webkit-autofill:focus]:!bg-[#2a2727]
+              [&:-webkit-autofill:active]:!bg-[#2a2727]
               ${className}
             `}
             {...props}
@@ -118,6 +130,23 @@ const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          )}
+          {success && !error && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <svg
+                className="w-5 h-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
             </div>

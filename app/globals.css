@@ -38,3 +38,28 @@ body {
   }
 }
 
+/* Force dark background on autofill - Global override */
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #2a2727 inset !important;
+    -webkit-text-fill-color: #F1FFFA !important;
+    box-shadow: 0 0 0 1000px #2a2727 inset !important;
+    background-color: #2a2727 !important;
+    color: #F1FFFA !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* For valid state autofill */
+  input.border-\[\#177245\]:-webkit-autofill,
+  input.border-\[\#177245\]:-webkit-autofill:hover,
+  input.border-\[\#177245\]:-webkit-autofill:focus,
+  input.border-\[\#177245\]:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(23, 114, 69, 0.1) inset !important;
+    box-shadow: 0 0 0 1000px rgba(23, 114, 69, 0.1) inset !important;
+    background-color: rgba(23, 114, 69, 0.1) !important;
+  }
+}
+
