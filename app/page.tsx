@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 export default function Home() {
-  // Redireciona para login por padrão
-  redirect("/auth/login");
+  // Redireciona para a página de perfil público
+  redirect("/william-lantelme-filho");
 }
 
