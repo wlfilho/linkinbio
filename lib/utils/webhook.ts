@@ -12,6 +12,7 @@ export interface WebhookPayload {
     material_name: string;
     email_content: string;
     thank_you_content: string;
+    download_link: string;
   };
   timestamp: string;
 }
@@ -136,6 +137,7 @@ export async function sendAndLogWebhook(
       material_name: material.material_name,
       email_content: material.email_content,
       thank_you_content: material.thank_you_content,
+      download_link: material.download_link,
     },
     timestamp: new Date().toISOString(),
   };
@@ -185,6 +187,7 @@ export async function sendTestWebhook(
       material_name: material.material_name,
       email_content: material.email_content,
       thank_you_content: material.thank_you_content,
+      download_link: material.download_link,
     },
     timestamp: new Date().toISOString(),
   };

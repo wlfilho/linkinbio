@@ -267,13 +267,28 @@ export default function FreeMaterialsPage() {
                   </div>
 
                   {/* Thank You Content Preview */}
-                  <div>
+                  <div className="mb-3">
                     <p className="text-[#F1FFFA]/50 text-xs font-medium mb-1">
                       Página de Obrigado:
                     </p>
                     <p className="text-[#F1FFFA]/70 text-sm line-clamp-2">
                       {material.thank_you_content}
                     </p>
+                  </div>
+
+                  {/* Download Link */}
+                  <div>
+                    <p className="text-[#F1FFFA]/50 text-xs font-medium mb-1">
+                      Link de Download:
+                    </p>
+                    <a
+                      href={material.download_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#177245] hover:text-[#1a8a52] text-sm underline break-all transition-colors"
+                    >
+                      {material.download_link}
+                    </a>
                   </div>
                 </div>
 

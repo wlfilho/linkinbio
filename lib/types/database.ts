@@ -141,6 +141,7 @@ export interface Database {
           material_name: string
           email_content: string
           thank_you_content: string
+          download_link: string
           is_active: boolean
           order_index: number
           created_at: string
@@ -152,6 +153,7 @@ export interface Database {
           material_name: string
           email_content: string
           thank_you_content: string
+          download_link: string
           is_active?: boolean
           order_index?: number
           created_at?: string
@@ -163,6 +165,7 @@ export interface Database {
           material_name?: string
           email_content?: string
           thank_you_content?: string
+          download_link?: string
           is_active?: boolean
           order_index?: number
           created_at?: string

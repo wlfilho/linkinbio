@@ -24,20 +24,23 @@ export default function FreeMaterialsForm({
     material_name: "",
     email_content: "",
     thank_you_content: "",
+    download_link: "",
   });
 
   const [errors, setErrors] = useState({
     material_name: "",
     email_content: "",
     thank_you_content: "",
+    download_link: "",
   });
 
   useEffect(() => {
     if (material) {
       setFormData({
-        material_name: material.material_name,
-        email_content: material.email_content,
-        thank_you_content: material.thank_you_content,
+        material_name: material.material_name || "",
+        email_content: material.email_content || "",
+        thank_you_content: material.thank_you_content || "",
+        download_link: material.download_link || "",
       });
     }
   }, [material]);
@@ -47,6 +50,7 @@ export default function FreeMaterialsForm({
       material_name: "",
       email_content: "",
       thank_you_content: "",
+      download_link: "",
     };
 
     let isValid = true;
@@ -67,6 +71,20 @@ export default function FreeMaterialsForm({
     if (!formData.thank_you_content.trim()) {
       newErrors.thank_you_content = "Conteúdo da página de obrigado é obrigatório";
       isValid = false;
+    }
+
+    // Validate download link
+    if (!formData.download_link.trim()) {
+      newErrors.download_link = "Link de download é obrigatório";
+      isValid = false;
+    } else {
+      // Validate URL format
+      try {
+        new URL(formData.download_link.trim());
+      } catch {
+        newErrors.download_link = "URL inválida. Use o formato: https://exemplo.com/arquivo.pdf";
+        isValid = false;
+      }
     }
 
     setErrors(newErrors);
@@ -100,6 +118,7 @@ export default function FreeMaterialsForm({
             material_name: formData.material_name.trim(),
             email_content: formData.email_content.trim(),
             thank_you_content: formData.thank_you_content.trim(),
+            download_link: formData.download_link.trim(),
             updated_at: new Date().toISOString(),
           })
           .eq("id", material.id);
@@ -115,6 +134,7 @@ export default function FreeMaterialsForm({
             material_name: formData.material_name.trim(),
             email_content: formData.email_content.trim(),
             thank_you_content: formData.thank_you_content.trim(),
+            download_link: formData.download_link.trim(),
             order_index: 0,
           });
 
@@ -152,6 +172,25 @@ export default function FreeMaterialsForm({
             required
             error={errors.material_name}
           />
+        </div>
+
+        {/* Download Link */}
+        <div>
+          <Input
+            label="Link de Download"
+            type="url"
+            value={formData.download_link}
+            onChange={(e) => {
+              setFormData({ ...formData, download_link: e.target.value });
+              setErrors({ ...errors, download_link: "" });
+            }}
+            placeholder="https://exemplo.com/arquivo.pdf"
+            required
+            error={errors.download_link}
+          />
+          <p className="text-[#F1FFFA]/50 text-sm mt-1">
+            URL do arquivo que será enviado ao lead (PDF, ZIP, etc.)
+          </p>
         </div>
 
         {/* Email Content */}
