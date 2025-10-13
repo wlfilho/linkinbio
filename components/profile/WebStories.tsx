@@ -174,15 +174,15 @@ export default function WebStories({ userId }: WebStoriesProps) {
   return (
     <>
       {/* Stories Thumbnails */}
-      <div className="mb-6">
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="mb-4 overflow-visible">
+        <div className="flex gap-4 overflow-x-auto pb-2 pt-1 px-2" style={{ overflowY: 'visible' }}>
           {stories.map((story, index) => {
             const isViewed = viewedStories.has(story.id);
             return (
               <button
                 key={story.id}
                 onClick={() => openStory(index)}
-                className="flex-shrink-0 focus:outline-none group"
+                className="flex-shrink-0 focus:outline-none group py-1 -my-1 px-2 -mx-2"
               >
                 <div
                   className={`
@@ -192,7 +192,7 @@ export default function WebStories({ userId }: WebStoriesProps) {
                         ? "bg-gray-300"
                         : "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600"
                     }
-                    group-hover:scale-105
+                    group-hover:scale-110
                   `}
                 >
                   <div className="w-full h-full rounded-full bg-white p-[2px]">

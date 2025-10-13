@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, ExternalLink, LogOut, Download } from "lucide-react";
+import { LayoutDashboard, Users, ExternalLink, LogOut, Download, Camera } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
@@ -29,6 +29,11 @@ export default function AdminNav({ profile }: AdminNavProps) {
       href: "/admin/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      href: "/admin/stories",
+      label: "Stories",
+      icon: Camera,
     },
     {
       href: "/admin/leads",

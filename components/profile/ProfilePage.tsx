@@ -70,6 +70,9 @@ export default function ProfilePage({
   return (
     <div className="min-h-screen bg-[#212020] py-8 px-4 sm:py-12">
       <div className="max-w-2xl mx-auto">
+        {/* Web Stories */}
+        <WebStories userId={profile.id} />
+
         {/* Profile Header - Grid Layout */}
         <div className="bg-[#2a2727] rounded-lg p-6 mb-8 border border-[#3a3737]">
           <div className="grid grid-cols-[auto_1fr] gap-6 items-start">
@@ -138,9 +141,6 @@ export default function ProfilePage({
             </div>
           </div>
         </div>
-
-        {/* Web Stories */}
-        <WebStories userId={profile.id} />
 
         {/* Custom Buttons */}
         {customButtons.length > 0 && (
