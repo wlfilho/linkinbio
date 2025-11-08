@@ -178,8 +178,6 @@ export default function LeadForm({ userId }: LeadFormProps) {
     console.log("Form data:", formData);
 
     try {
-      const supabase = createClient();
-
       const leadData = {
         user_id: userId,
         full_name: formData.fullName.trim(),
@@ -188,31 +186,34 @@ export default function LeadForm({ userId }: LeadFormProps) {
         selected_material_id: formData.selectedMaterial,
       };
 
-      console.log("Inserting lead data:", leadData);
+      console.log("Submitting lead data:", leadData);
 
-      const { data, error } = await supabase.from("leads").insert(leadData).select();
+      // Call API route to insert lead (bypasses RLS)
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(leadData),
+      });
 
-      console.log("Insert response:", { data, error });
+      const result = await response.json();
 
-      if (error) {
-        console.error("Supabase error details:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        });
-        throw error;
+      console.log("API response:", result);
+
+      if (!response.ok) {
+        throw new Error(result.error || "Erro ao enviar formulário");
       }
 
-      console.log("✅ Lead submitted successfully:", data);
+      console.log("✅ Lead submitted successfully:", result.data);
 
       // Get the created lead ID
-      const createdLead = data?.[0];
+      const createdLead = result.data;
       const leadId = createdLead?.id;
 
       if (!leadId) {
-        console.error("❌ No lead ID returned from insert");
-        throw new Error("Failed to get lead ID");
+        console.error("❌ No lead ID returned from API");
+        throw new Error("Falha ao obter ID do lead");
       }
 
       console.log("📝 Lead ID:", leadId);
