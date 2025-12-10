@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/links/:path*",
+      "destination": "https://linkinbio-ten.vercel.app/:path*"
+    }
+  ]
+}
+

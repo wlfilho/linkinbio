@@ -42,6 +42,8 @@ export async function updateSession(request: NextRequest) {
   // #endregion
 
   // Protect admin routes
+  // Note: When using basePath, Next.js handles paths automatically
+  // The pathname here is already relative to basePath
   if (request.nextUrl.pathname.startsWith("/admin") && !user) {
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:42',message:'Redirecting to login',data:{originalPath:request.nextUrl.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
