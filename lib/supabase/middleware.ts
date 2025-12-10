@@ -5,7 +5,7 @@ const BASE_PATH = "/links";
 
 export async function updateSession(request: NextRequest) {
   // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:4',message:'Middleware entry',data:{pathname:request.nextUrl.pathname,host:request.nextUrl.host,origin:request.nextUrl.origin,search:request.nextUrl.search,headers:Object.fromEntries(request.headers.entries())},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+  fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:4',message:'Middleware entry',data:{url:request.url,pathname:request.nextUrl.pathname,basePath:request.nextUrl.basePath,host:request.nextUrl.host,headers:Object.fromEntries(request.headers.entries())},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'BasePathCheck'})}).catch(()=>{});
   // #endregion
   
   // Get the pathname relative to basePath
