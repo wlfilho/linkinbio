@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // TEMPORARIAMENTE REMOVIDO: basePath será adicionado depois que funcionar sem ele
-  // basePath: "/links",
+  // Configura o projeto para funcionar sob o caminho /links
+  // Isso isola os assets em /links/_next/..., evitando conflito com o portfolio
+  basePath: "/links",
   
-  // Evita redirects automáticos relacionados a trailing slashes que podem causar loops
+  // Evita redirects automáticos que podem causar loops
   trailingSlash: false,
   
   images: {
