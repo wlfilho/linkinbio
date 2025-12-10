@@ -1,10 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const BASE_PATH = "/links";
+
 export async function updateSession(request: NextRequest) {
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:4',message:'Middleware entry',data:{pathname:request.nextUrl.pathname,host:request.nextUrl.host,origin:request.nextUrl.origin,search:request.nextUrl.search,headers:Object.fromEntries(request.headers.entries())},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
   // #endregion
+  
+  // Get the pathname relative to basePath
+  const pathname = request.nextUrl.pathname;
+  const pathnameWithoutBasePath = pathname.startsWith(BASE_PATH) 
+    ? pathname.slice(BASE_PATH.length) || '/' 
+    : pathname;
+  
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -38,29 +47,35 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:36',message:'After auth check',data:{pathname:request.nextUrl.pathname,hasUser:!!user,isAdminRoute:request.nextUrl.pathname.startsWith('/admin'),isAuthRoute:request.nextUrl.pathname.startsWith('/auth')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+  fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:36',message:'After auth check',data:{pathname:request.nextUrl.pathname,pathnameWithoutBasePath,hasUser:!!user,isAdminRoute:pathnameWithoutBasePath.startsWith('/admin'),isAuthRoute:pathnameWithoutBasePath.startsWith('/auth')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
   // #endregion
 
-  // Protect admin routes
-  // Note: When using basePath, Next.js handles paths automatically
-  // The pathname here is already relative to basePath
-  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+  // Protect admin routes - use pathname without basePath for comparison
+  // IMPORTANT: When request comes via external rewrite, pathname already includes basePath
+  // We need to preserve the original URL structure to avoid redirect loops
+  if (pathnameWithoutBasePath.startsWith("/admin") && !user) {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:42',message:'Redirecting to login',data:{originalPath:request.nextUrl.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:42',message:'Redirecting to login',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
     // #endregion
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    return NextResponse.redirect(url);
+    // Create redirect URL preserving the basePath if it was present
+    const redirectPath = pathname.startsWith(BASE_PATH) 
+      ? `${BASE_PATH}/auth/login` 
+      : "/auth/login";
+    const redirectUrl = new URL(redirectPath, request.url);
+    return NextResponse.redirect(redirectUrl);
   }
 
   // Redirect authenticated users away from auth pages
-  if (request.nextUrl.pathname.startsWith("/auth") && user) {
+  if (pathnameWithoutBasePath.startsWith("/auth") && user) {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:49',message:'Redirecting authenticated user from auth page',data:{originalPath:request.nextUrl.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:49',message:'Redirecting authenticated user from auth page',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
     // #endregion
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/dashboard";
-    return NextResponse.redirect(url);
+    // Create redirect URL preserving the basePath if it was present
+    const redirectPath = pathname.startsWith(BASE_PATH) 
+      ? `${BASE_PATH}/admin/dashboard` 
+      : "/admin/dashboard";
+    const redirectUrl = new URL(redirectPath, request.url);
+    return NextResponse.redirect(redirectUrl);
   }
 
   // #region agent log
