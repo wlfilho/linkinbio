@@ -51,26 +51,32 @@ export async function updateSession(request: NextRequest) {
   // #endregion
 
   // Protect admin routes - use pathname without basePath for comparison
-  // IMPORTANT: When using basePath, Next.js automatically handles redirects
-  // We use clone() to preserve the original URL structure including host
+  // CRITICAL: When request comes via external rewrite with basePath already in pathname,
+  // we must include basePath in redirect pathname to avoid Next.js adding it again
   if (pathnameWithoutBasePath.startsWith("/admin") && !user) {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:42',message:'Redirecting to login',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath,host:request.nextUrl.host,referer:request.headers.get('referer')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:42',message:'Redirecting to login',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath,host:request.nextUrl.host},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
     // #endregion
-    // Clone the URL and set pathname - Next.js will add basePath automatically
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
+    // If pathname already includes basePath (from external rewrite), include it in redirect
+    // Otherwise Next.js will add it again, creating /links/links/auth/login
+    url.pathname = pathname.startsWith(BASE_PATH) 
+      ? `${BASE_PATH}/auth/login` 
+      : "/auth/login";
     return NextResponse.redirect(url);
   }
 
   // Redirect authenticated users away from auth pages
   if (pathnameWithoutBasePath.startsWith("/auth") && user) {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:49',message:'Redirecting authenticated user from auth page',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath,host:request.nextUrl.host,referer:request.headers.get('referer')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/78dd0afe-6ff0-4a6c-80bb-1c5a03cfe141',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/supabase/middleware.ts:49',message:'Redirecting authenticated user from auth page',data:{originalPath:request.nextUrl.pathname,pathnameWithoutBasePath,host:request.nextUrl.host},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
     // #endregion
-    // Clone the URL and set pathname - Next.js will add basePath automatically
     const url = request.nextUrl.clone();
-    url.pathname = "/admin/dashboard";
+    // If pathname already includes basePath (from external rewrite), include it in redirect
+    // Otherwise Next.js will add it again, creating /links/links/admin/dashboard
+    url.pathname = pathname.startsWith(BASE_PATH) 
+      ? `${BASE_PATH}/admin/dashboard` 
+      : "/admin/dashboard";
     return NextResponse.redirect(url);
   }
 

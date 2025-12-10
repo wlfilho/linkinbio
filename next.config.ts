@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   // o Vercel preserva o path completo (/links/...) então o basePath é necessário
   basePath: "/links",
   
+  // Evita redirects automáticos relacionados a trailing slashes que podem causar loops
+  trailingSlash: false,
+  
   images: {
     remotePatterns: [
       {
