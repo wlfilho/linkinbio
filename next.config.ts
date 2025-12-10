@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Configura o projeto para funcionar sob o caminho /links
-  // Quando acessado via rewrite externo do projeto portfolio2026,
-  // o Vercel preserva o path completo (/links/...) então o basePath é necessário
-  basePath: "/links",
+  // TEMPORARIAMENTE REMOVIDO: basePath será adicionado depois que funcionar sem ele
+  // basePath: "/links",
   
   // Evita redirects automáticos relacionados a trailing slashes que podem causar loops
   trailingSlash: false,
