@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { Trash2, RefreshCw, AlertCircle } from "lucide-react";
@@ -13,7 +14,7 @@ export default function CleanupPage() {
   const checkOrphans = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/auth/cleanup");
+      const response = await fetch("/links/api/auth/cleanup");
       const data = await response.json();
       setOrphans(data);
     } catch (error) {
@@ -30,7 +31,7 @@ export default function CleanupPage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/auth/cleanup", {
+      const response = await fetch("/links/api/auth/cleanup", {
         method: "POST",
       });
       const data = await response.json();
@@ -175,23 +176,23 @@ export default function CleanupPage() {
                 <li>Após a limpeza, tente criar sua conta novamente</li>
                 <li>
                   Acesse:{" "}
-                  <a
+                  <Link
                     href="/auth/register"
                     className="text-primary hover:underline font-medium"
                   >
                     /auth/register
-                  </a>
+                  </Link>
                 </li>
               </ol>
             </div>
 
             <div className="mt-4 text-center">
-              <a
+              <Link
                 href="/auth/register"
                 className="text-primary hover:underline font-medium"
               >
                 ← Voltar para Registro
-              </a>
+              </Link>
             </div>
           </div>
         </Card>

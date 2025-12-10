@@ -30,8 +30,7 @@ export default function LoginPage() {
       if (error) throw error;
 
       toast.success("Login realizado com sucesso!");
-      router.push("/admin/dashboard");
-      router.refresh();
+      window.location.href = "/links/admin/dashboard";
     } catch (error: any) {
       toast.error(error.message || "Erro ao fazer login");
     } finally {

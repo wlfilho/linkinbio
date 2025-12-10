@@ -62,7 +62,7 @@ export default function RegisterPage() {
     try {
       // Call API route to create user and profile
       console.log("Calling /api/auth/register...");
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/links/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,8 +102,7 @@ export default function RegisterPage() {
       // Small delay before redirect to ensure toast is visible
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      router.push("/admin/dashboard");
-      router.refresh();
+      window.location.href = "/links/admin/dashboard";
     } catch (error: any) {
       console.error("Registration error:", error);
       toast.error(error.message || "Erro ao criar conta");

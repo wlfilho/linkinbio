@@ -189,7 +189,7 @@ export default function LeadForm({ userId }: LeadFormProps) {
       console.log("Submitting lead data:", leadData);
 
       // Call API route to insert lead (bypasses RLS)
-      const response = await fetch("/api/leads", {
+      const response = await fetch("/links/api/leads", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

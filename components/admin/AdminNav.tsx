@@ -20,8 +20,7 @@ export default function AdminNav({ profile }: AdminNavProps) {
     const supabase = createClient();
     await supabase.auth.signOut();
     toast.success("Logout realizado com sucesso");
-    router.push("/auth/login");
-    router.refresh();
+    window.location.href = "/links/auth/login";
   };
 
   const navItems = [
@@ -90,7 +89,7 @@ export default function AdminNav({ profile }: AdminNavProps) {
           <div className="flex items-center space-x-3">
             {profile && (
               <Link
-                href={`/${profile.slug}`}
+                href={`/links/${profile.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
